@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle } from 'reactstrap';
 
+//one way to declare a functional component
 function RenderMenuItem({ dish, onClick }) {
     return (
         <Card onClick={() => onClick(dish.id)}>
