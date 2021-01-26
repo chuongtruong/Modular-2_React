@@ -5,13 +5,6 @@ import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle } from 're
 class Menu extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            selectedDish: null
-        }
-    }
-
-    onDishSelect(dish) {
-        this.setState({ selectedDish: dish })
     }
 
     renderComments(c) {
@@ -61,13 +54,10 @@ class Menu extends Component {
     }
 
     render() {
-        // create a const of html then add it to other place
-        // to reuse this const, put {const name} to where you want to put.
         const menu = this.props.dishes.map((dish) => {
             return (
-                //key help react to recognize each element
                 <div key={dish.id} className="col-12 col-md-5 m-1">
-                    <Card onClick={() => this.onDishSelect(dish)}>
+                    <Card onClick={()=>this.props.onClick(dish.id)}>
                         <CardImg width="100%" object src={dish.image} alt={dish.name}></CardImg>
                         <CardImgOverlay body className="ml-5">
                             <CardTitle>
@@ -76,19 +66,17 @@ class Menu extends Component {
                         </CardImgOverlay>
                     </Card>
                 </div>
-
             );
         });
+
         return (
             <div className="container">
                 <div className="row">
                     {menu}
                 </div>
-
-                {this.renderDish(this.state.selectedDish)}
             </div>
         );
     }
 }
 
-export default Menu
+export default Menu;
