@@ -32,6 +32,16 @@ class Main extends Component {
                 />
             );
         }
+        // The Route down below will pass in 3 parameters, Location, History and Match.
+        // We can just pick what parameter we need for this function
+        const DishWithId = ({match}) => {
+            return (
+                //match.params.dishId,10 -> convert the ID to base 10 integer
+                <DishDetail dish={this.state.dishes.filter((dish) => dish.id === parseInt(match.params.dishId,10))[0]} 
+            comments={this.state.comments.filter((comment) => comment.dishId === parseInt(match.params.dishId,10))} />
+            );
+        }
+
         return (
             <div className="App">
                 <Header/>
@@ -43,6 +53,7 @@ class Main extends Component {
                 <Switch>
                     <Route path="/home" component={HomePage} />
                     <Route exact path="/menu" component={() => <Menu dishes = {this.state.dishes}/>} />
+                    <Route path="/menu/:dishId" component={DishWithId}/>
                     <Route exact path="/contactus" component={Contact}/>
                     <Redirect  to="/home" />
                 </Switch>
