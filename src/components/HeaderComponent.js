@@ -1,24 +1,43 @@
 import React, { Component } from 'react';
-import { Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem, Jumbotron } from 'reactstrap';
+import { Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem, Jumbotron, 
+        Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Input, Label } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 
 class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isNavOpen: false
+      isNavOpen: false,
+      isModalOpen: false
+
     }
     this.toggleNav = this.toggleNav.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
 
   //Defining a function, see the <NavbarToggler onClick={this.toggleNav} /> below ?, but in order to use this function, we ALSO have
   //to bind it to the component, in the contructor ^^/ A little hard to understand.
   //see videos https://www.coursera.org/learn/front-end-react/lecture/meLZh/exercise-video-react-router
-  toggleNav(){
-    this.setState({ 
+  toggleNav() {
+    this.setState({
       isNavOpen: !this.state.isNavOpen
-    })
+    });
   }
+
+  toggleModal() {
+    this.setState({
+      isModalOpen: !this.state.isModalOpen
+    });
+  }
+
+  handleLogin(event) {
+    this.toggleModal();
+    alert("Username: " + this.username.value + " Password: " + this.password.value
+        + " Remember: " + this.remember.checked);
+    event.preventDefault();
+
+}
 
   render() {
     return (
@@ -44,6 +63,13 @@ class Header extends Component {
                   <NavLink className="nav-link" to="/contactus"><span className="fa fa-address-card fa-lg">Contact Us</span></NavLink>
                 </NavItem>
               </Nav>
+              <Nav className="ml-auto" navbar>
+                <NavItem>
+                  <Button outline onClick={this.toggleModal}>
+                    <span className="fa fa-sign-in fa-lg"> Login</span>
+                  </Button>
+                </NavItem>
+              </Nav>
             </Collapse>
           </div>
         </Navbar>
@@ -57,6 +83,31 @@ class Header extends Component {
             </div>
           </div>
         </Jumbotron>
+        <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+          <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
+          <ModalBody>
+            <Form onSubmit={this.handleLogin}>
+              <FormGroup>
+                <Label htmlFor="username">Username</Label>
+                {/* innerRef={(input) => this.username = input  is use to retrieve information from this field*/}
+                <Input type="text" id="username" name="username" innerRef={(input) => this.username = input}/>
+              </FormGroup>
+
+              <FormGroup>
+                <Label htmlFor="password">Password</Label>
+                <Input type="password" id="password" name="password" innerRef={(input) => this.password = input}/>
+              </FormGroup>
+
+              <FormGroup check>
+                <Input type="checkbox" name="remember" innerRef={(input) => this.remember = input}/>Remember Me
+              </FormGroup>
+
+              <Button type="submit" value="submit" className="bg-primary">
+                Login
+              </Button>
+            </Form>
+          </ModalBody>
+        </Modal>
       </React.Fragment>
     );
   }
