@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 
@@ -14,8 +14,8 @@ function RenderDish({ dish }) {
                     </CardTitle>
                     <CardText>
                         {dish.description}
-
                     </CardText>
+                    
                 </CardBody>
             </Card>
         </div>
@@ -37,6 +37,9 @@ function RenderComments({ comments }) {
                         )
                     })}
                 </ul>
+                <Button outline>
+                        <span className="fa fa-edit fa-lg"> Submit Comment</span>
+                </Button>
             </div>
         );
     else
@@ -68,6 +71,7 @@ const DishDetail = (props) => {
                 <div className="row">
                     <RenderDish dish={props.dish} />
                     <RenderComments comments={props.comments} />
+
                 </div>
             </div>
         )
