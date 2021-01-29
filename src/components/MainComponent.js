@@ -6,30 +6,41 @@ import Home from './HomeComponent';
 import Contact from './ContactComponent';
 import DishDetail from './DishdetailComponent';
 import About from './AboutComponent';
-import { DISHES } from "../shared/dishes";
-import { COMMENTS } from "../shared/comments";
-import { LEADERS } from "../shared/leaders";
-import { PROMOTIONS } from "../shared/promotions";
-import {Switch, Route, Redirect} from 'react-router-dom';
+
+import {Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import {connect} from 'react-redux';
+
+//This function is out of component declaration.
+//In order to connect this MainComponent to the store is to use connect(mapStateToProps, [Component name])
+//mapStateToProps() take the state from the store (configureStore.js in this exercise), map it to this component
+//Therefore, whatever we use this.state....., we must change to this.props.
+//Because, state is now belong to the store, the store pass the state to this component by connect(), state -> props
+//in this component.
+
+
+const mapStateToProps = state => {
+    return {
+        dishes: state.dishes,
+        comments: state.comments,
+        promotions: state.promotions,
+        leader: state.leaders
+    }
+}
+
 
 class Main extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            dishes: DISHES,
-            comments: COMMENTS,
-            promotions: PROMOTIONS,
-            leaders: LEADERS
-        };
+
     }
 
     render() {
         const HomePage = () => {
             return(
                 <Home 
-                dish={this.state.dishes.filter((dish) => dish.featured)[0]}
-                promotions={this.state.promotions.filter((promo) => promo.featured)[0]}
-                leader={this.state.leaders.filter((leader) => leader.featured)[0]}
+                dish={this.props.dishes.filter((dish) => dish.featured)[0]}
+                promotions={this.props.promotions.filter((promo) => promo.featured)[0]}
+                leader={this.props.leaders.filter((leader) => leader.featured)[0]}
                 />
             );
         }
@@ -38,8 +49,8 @@ class Main extends Component {
         const DishWithId = ({match}) => {
             return(
                 <DishDetail 
-                    dish={this.state.dishes.filter((dish) => dish.id === parseInt(match.params.dishId,10))[0]} 
-                    comments={this.state.comments.filter((comment) => comment.dishId === parseInt(match.params.dishId,10))} 
+                    dish={this.props.dishes.filter((dish) => dish.id === parseInt(match.params.dishId,10))[0]} 
+                    comments={this.props.comments.filter((comment) => comment.dishId === parseInt(match.params.dishId,10))} 
                 />
             );
         }
@@ -54,10 +65,10 @@ class Main extends Component {
                 {/* With routing */}
                 <Switch>
                     <Route path="/home" component={HomePage} />
-                    <Route exact path="/menu" component={() => <Menu dishes = {this.state.dishes}/>} />
+                    <Route exact path="/menu" component={() => <Menu dishes = {this.props.dishes}/>} />
                     <Route path="/menu/:dishId" component={DishWithId}/>
                     <Route exact path="/contactus" component={Contact}/>
-                    <Route path="/aboutus" component={() => <About leaders={this.state.leaders}/>} />
+                    <Route path="/aboutus" component={() => <About leaders={this.props.leaders}/>} />
                     <Redirect  to="/home" />
                 </Switch>
                 <Footer/>
@@ -65,5 +76,6 @@ class Main extends Component {
         );
     }
 }
-
-export default Main;
+//Here is how we connect this component to redux, connect(mapStateToProps)(Main).
+//But if we use router, then we have to use withRouter(connect(mapStateToProps)(Main))
+export default withRouter(connect(mapStateToProps)(Main));
