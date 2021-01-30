@@ -1,6 +1,8 @@
 import React from 'react';
 import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import Comment from './CommentComponent';
+
 
 
 function RenderDish({ dish }) {
@@ -15,7 +17,6 @@ function RenderDish({ dish }) {
                     <CardText>
                         {dish.description}
                     </CardText>
-                    
                 </CardBody>
             </Card>
         </div>
@@ -37,9 +38,7 @@ function RenderComments({ comments }) {
                         )
                     })}
                 </ul>
-                <Button outline>
-                        <span className="fa fa-edit fa-lg"> Submit Comment</span>
-                </Button>
+                <Comment></Comment>
             </div>
         );
     else
