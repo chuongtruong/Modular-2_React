@@ -9,6 +9,7 @@ import About from './AboutComponent';
 
 import {Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import {connect} from 'react-redux';
+import {addComment} from '../redux/ActionCreators';
 
 //This function is out of component declaration.
 //In order to connect this MainComponent to the store is to use connect(mapStateToProps, [Component name])
@@ -23,15 +24,17 @@ const mapStateToProps = state => {
         dishes: state.dishes,
         comments: state.comments,
         promotions: state.promotions,
-        leader: state.leaders
+        leaders: state.leaders
     }
 }
 
+const mapDispatchToProps = (dispatch) => ({
+    addComment: (dishId, rating, author,comment) => dispatch(addComment(dishId, rating, author,comment))
+})
 
 class Main extends Component {
     constructor(props) {
         super(props);
-
     }
 
     render() {
@@ -39,7 +42,7 @@ class Main extends Component {
             return(
                 <Home 
                 dish={this.props.dishes.filter((dish) => dish.featured)[0]}
-                promotions={this.props.promotions.filter((promo) => promo.featured)[0]}
+                promotion={this.props.promotions.filter((promo) => promo.featured)[0]}
                 leader={this.props.leaders.filter((leader) => leader.featured)[0]}
                 />
             );
@@ -50,7 +53,8 @@ class Main extends Component {
             return(
                 <DishDetail 
                     dish={this.props.dishes.filter((dish) => dish.id === parseInt(match.params.dishId,10))[0]} 
-                    comments={this.props.comments.filter((comment) => comment.dishId === parseInt(match.params.dishId,10))} 
+                    comments={this.props.comments.filter((comment) => comment.dishId === parseInt(match.params.dishId,10))}
+                    addComment = {this.props.addComment}
                 />
             );
         }
@@ -78,4 +82,4 @@ class Main extends Component {
 }
 //Here is how we connect this component to redux, connect(mapStateToProps)(Main).
 //But if we use router, then we have to use withRouter(connect(mapStateToProps)(Main))
-export default withRouter(connect(mapStateToProps)(Main));
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(Main));
