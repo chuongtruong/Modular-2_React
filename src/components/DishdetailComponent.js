@@ -1,8 +1,133 @@
-import React from 'react';
-import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button } from 'reactstrap';
+import React, { Component } from 'react';
+import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Row, Label } from 'reactstrap';
+import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom';
-import Comment from './CommentComponent';
 
+const required = (val) => val && val.length;
+const maxLength = (len) => (val) => !(val) || (val.length <= len);
+const minLength = (len) => (val) => val && (val.length >= len);
+const isNumber = (val) => !isNaN(Number(val));
+
+export class Comment extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isModalOpen: false
+        }
+        this.toggleModal = this.toggleModal.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    toggleModal() {
+        this.setState({
+            isModalOpen: !this.state.isModalOpen
+        });
+    }
+
+    handleSubmit(values) {
+        alert('Current Comment is: ' + JSON.stringify(values));
+    }
+
+    render() {
+        return (
+            <div>
+                <Button outline onClick={this.toggleModal}>
+                    <span className="fa fa-pencil fa-lg"> Comment </span>
+                </Button>
+                <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+                    <ModalHeader toggle={this.toggleModal}>Comment
+                    </ModalHeader>
+                    <ModalBody>
+                        <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+                            <div className="container">
+                                {/* Rating */}
+                                <Row className="form-group">
+                                    <Label htmlFor="rating">
+                                        Rating
+                                </Label>
+                                </Row>
+                                <Row className="form-group">
+                                    <Control.select
+                                        model=".rating"
+                                        id="rating"
+                                        name="Rating"
+                                        className="form-control"
+                                        validators={{
+                                            required, isNumber
+                                        }}>
+
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+
+                                    </Control.select>
+
+                                    <Errors
+                                        className="text-danger"
+                                        model=".rating"
+                                        show="touched"
+                                        messages={{
+                                            required: ' Required ',
+                                            isNumber: ' Must be a number '
+                                        }}
+                                    />
+                                </Row>
+
+                                {/* Name */}
+                                <Row className="form-group">
+                                    <Label htmlFor="customerName">
+                                        Your name
+                                </Label>
+                                </Row>
+                                <Row className="form-group">
+                                    <Control.text
+                                        model=".customerName"
+                                        id="customerName"
+                                        name="customerName"
+                                        className="form-control"
+                                        validators={{
+                                            required, minLength: minLength(3), maxLength: maxLength(15)
+                                        }} />
+
+                                    <Errors
+                                        className="text-danger"
+                                        model=".customerName"
+                                        show="touched"
+                                        messages={{
+                                            required: ' Required ',
+                                            minLength: 'Must be greater than 2 numbers',
+                                            maxLength: 'Must be 15 numbers or less'
+                                        }}
+                                    />
+                                </Row>
+
+                                {/* Comments */}
+                                <Row className="form-group">
+                                    <Label htmlFor="comment">
+                                        Comments
+                                </Label>
+                                </Row>
+                                <Row className="form-group">
+                                    <Control.textarea model=".message" id="message" name="message"
+                                        rows="4"
+                                        className="form-control" />
+                                </Row>
+                                <Row className="form-group">
+                                    <Button type="submit" color="primary">
+                                        Submit
+                                    </Button>
+                                </Row>
+                            </div>
+                        </LocalForm>
+                    </ModalBody>
+                </Modal>
+
+            </div>
+        )
+    }
+}
 
 
 function RenderDish({ dish }) {
@@ -70,7 +195,6 @@ const DishDetail = (props) => {
                 <div className="row">
                     <RenderDish dish={props.dish} />
                     <RenderComments comments={props.comments} />
-
                 </div>
             </div>
         )
