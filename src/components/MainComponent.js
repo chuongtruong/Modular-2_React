@@ -10,6 +10,7 @@ import About from './AboutComponent';
 import {Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import {connect} from 'react-redux';
 import { addComment, fetchDishes } from '../redux/ActionCreators';
+import { actions } from 'react-redux-form';
 
 //This function is out of component declaration.
 //In order to connect this MainComponent to the store is to use connect(mapStateToProps, [Component name])
@@ -17,8 +18,6 @@ import { addComment, fetchDishes } from '../redux/ActionCreators';
 //Therefore, whatever we use this.state....., we must change to this.props.
 //Because, state is now belong to the store, the store pass the state to this component by connect(), state -> props
 //in this component.
-
-
 const mapStateToProps = state => {
     return {
         dishes: state.dishes,
@@ -30,8 +29,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => ({
     addComment: (dishId, rating, author,comment) => dispatch(addComment(dishId, rating, author,comment)),
-    fetchDishes: () => { dispatch(fetchDishes())}
-})
+    fetchDishes: () => { dispatch(fetchDishes())},
+    resetFeedbackForm: () => { dispatch(actions.reset('feedback'))}
+});
 
 class Main extends Component {
     constructor(props) {
@@ -82,7 +82,7 @@ class Main extends Component {
                     <Route path="/home" component={HomePage} />
                     <Route exact path="/menu" component={() => <Menu dishes = {this.props.dishes}/>} />
                     <Route path="/menu/:dishId" component={DishWithId}/>
-                    <Route exact path="/contactus" component={Contact}/>
+                    <Route exact path='/contactus' component={() => <Contact resetFeedbackForm={this.props.resetFeedbackForm} />} />
                     <Route path="/aboutus" component={() => <About leaders={this.props.leaders}/>} />
                     <Redirect  to="/home" />
                 </Switch>
