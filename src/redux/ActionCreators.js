@@ -2,15 +2,51 @@ import * as ActionTypes from './ActionTypes';
 import { DISHES } from "../shared/dishes";
 import { baseUrl } from "../shared/baseUrl";
 
-export const addComment = (dishId, rating, author, comment) => ({
+export const addComment = (comment) => ({
     type: ActionTypes.ADD_COMMENT,
-    payload: {
+    payload: comment
+});
+
+export const postComment = (dishId, rating, author, comment) => (dispatch) => {
+
+    const newComment = {
         dishId: dishId,
         rating: rating,
         author: author,
         comment: comment
     }
-});
+
+    newComment.date = new Date().toISOString();
+    return fetch(baseUrl + 'comments', {
+        method: 'POST',//if we dont't define POST. default is GET.
+        body: JSON.stringify(newComment),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+        //handling fetch post response
+        .then(response => {
+            if (response.ok) {
+                return response; //->this response will be available for next then.
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText); // status will be the code of the error
+                error.response = response;
+                throw error;
+            }
+        },
+            //there's case that the server doesn't even response.
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            }
+        )
+
+        .then(response => response.json())
+        .then(response => dispatch(addComment(response)))
+        .catch(error => console.log('Post comments ' + error.message))
+};
+
 
 //this is a thunk - return a function of an inner function
 export const fetchDishes = () => (dispatch) => {
@@ -63,6 +99,7 @@ export const addComments = (comments) => ({
     type: ActionTypes.ADD_COMMENTS,
     payload: comments
 });
+
 
 export const fetchComments = () => (dispatch) => {
     return fetch(baseUrl + 'comments')
