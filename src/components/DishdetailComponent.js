@@ -161,7 +161,7 @@ function RenderDish({ dish }) {
 
         </div>
     )
-}
+} 
 
 function RenderComments({ comments, postComment, dishId }) {
     if (comments != null)

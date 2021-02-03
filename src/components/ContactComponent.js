@@ -3,7 +3,6 @@ import { BreadcrumbItem, Breadcrumb, Button, Label, Col, Row } from 'reactstrap'
 import { Control, Form, Errors, actions } from 'react-redux-form';
 import { Link } from 'react-router-dom';
 
-
 const required = (val) => val && val.length;
 //ensure value of length is less than or equal len in const maxLength = (len)
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -38,6 +37,7 @@ class Contact extends Component {
     handleSubmit(values) {
         console.log("Current State is: " + JSON.stringify(values));
         alert("Current State is: " + JSON.stringify(values));
+        this.props.postFeedback(values.firstname, values.lastname, values.telnum, values.email,true, 'Email', values.message);
         this.props.resetFeedbackForm();
     }
 
@@ -199,7 +199,6 @@ class Contact extends Component {
             </div>
         );
     }
-
 }
 
 export default Contact;
